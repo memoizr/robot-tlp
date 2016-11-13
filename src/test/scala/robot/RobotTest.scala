@@ -1,11 +1,10 @@
 package robot
 
-import com.sun.org.apache.xpath.internal.operations.Gte
 import org.scalatest.{FlatSpec, Matchers}
 import robot.Direction.{East, North, South, West}
 import robot.PositionInsideTenByTenGrid._
 import shapeless.Nat._
-import shapeless.ops.nat.{GTEq, LTEq, Pred}
+import shapeless.ops.nat.{LTEq, Pred}
 import shapeless.test.illTyped
 import shapeless.{Nat, Succ}
 
@@ -27,12 +26,39 @@ class RobotTest extends FlatSpec with Matchers {
     }
   }
 
-  it should "move to a legal position" in {
+  it should "move East within Range" in {
     val newGridAfterHavingMovedToSouth: PositionInsideTenByTenGrid[_1, _0] = TenByTenGrid.withRobotAt[_0, _0]().move(East) //compiles
-    val newGridAfterHavingMovedToSouth2: PositionInsideTenByTenGrid[_9, _0] = TenByTenGrid.withRobotAt[_8, _0]().move(East) //compiles
+    val newGridAfterHavingMovedToSouth2: PositionInsideTenByTenGrid[_9, _8] = TenByTenGrid.withRobotAt[_8, _8]().move(East) //compiles
+
+    illTyped {
+      "TenByTenGrid.withRobotAt[_9, _0]().move(East)"
+    }
+  }
+
+  it should "move South within Range" in {
     val newGridAfterHavingMovedToEast: PositionInsideTenByTenGrid[_0, _1] = TenByTenGrid.withRobotAt[_0, _0]().move(South) //compiles
+    val newGridAfterHavingMovedToEasts: PositionInsideTenByTenGrid[_2, _2] = TenByTenGrid.withRobotAt[_2, _1]().move(South) //compiles
+
+    illTyped {
+      "TenByTenGrid.withRobotAt[_0, _9]().move(South)"
+    }
+  }
+
+  it should "move North within Range" in {
     val newGridAfterHavingMovedToNorth: PositionInsideTenByTenGrid[_0, _8] = TenByTenGrid.withRobotAt[_0, _9]().move(North) //compiles
-    val newGridAfterHavingMovedToNorth2: PositionInsideTenByTenGrid[_0, _0] = TenByTenGrid.withRobotAt[_0, _1]().move(North) //compiles
+    val newGridAfterHavingMovedToNorths: PositionInsideTenByTenGrid[_7, _6] = TenByTenGrid.withRobotAt[_7, _7]().move(North) //compiles
+
+    illTyped {
+      "TenByTenGrid.withRobotAt[_0, _0]().move(North)"
+    }
+  }
+
+  it should "move West within Range" in {
+    val newGridAfterHavingMovedToNorth: PositionInsideTenByTenGrid[_1, _2] = TenByTenGrid.withRobotAt[_2, _2]().move(West) //compiles
+
+    illTyped {
+      "TenByTenGrid.withRobotAt[_0, _3]().move(West)"
+    }
   }
 }
 
@@ -43,7 +69,7 @@ object Direction {
   type South = South.type
   type East = East.type
   type North = North.type
-  type West = North.type
+  type West = West.type
 }
 
 case object South extends Direction
@@ -98,7 +124,7 @@ object moveTo {
                                                                  ): moveTo.Aux[West, column, row, PositionInsideTenByTenGrid[out, row]] = new moveTo[West, column, row] {
     override type Out = PositionInsideTenByTenGrid[out, row]
 
-    override def apply(): PositionInsideTenByTenGrid[out, row] = PositionInsideTenByTenGrid[out, row]()
+    override def apply(): Out = PositionInsideTenByTenGrid[out, row]()
   }
 }
 
