@@ -1,34 +1,32 @@
 package robot
 
-import robot.PositionInsideTenByTenGrid.lessThanOrEqualTo9
+import robot.PositionInsideTenByTenGrid.isWithinRange
 import shapeless.ops.nat.Pred
 import shapeless.{Nat, Poly, Succ}
 import Direction._
 
 object mover extends Poly {
+  type Position[column <: Nat, row <: Nat] = PositionInsideTenByTenGrid[column, row]
+
   implicit def toSouth[column <: Nat, row <: Nat](implicit
-                                                  rowValid: lessThanOrEqualTo9[Succ[row]],
-                                                  columnValid: lessThanOrEqualTo9[column]
-                                                 )
-  = use((x: PositionInsideTenByTenGrid[column, row], dir: South) => x.move(dir))
+                                                  rowValid: isWithinRange[Succ[row]],
+                                                  columnValid: isWithinRange[column]
+                                                 ) = use((x: Position[column, row], dir: South) => x.move(dir))
 
   implicit def toEast[column <: Nat, row <: Nat](implicit
-                                                 rowValid: lessThanOrEqualTo9[row],
-                                                 columnValid: lessThanOrEqualTo9[Succ[column]]
-                                                )
-  = use((x: PositionInsideTenByTenGrid[column, row], dir: East) => x.move(dir))
+                                                 rowValid: isWithinRange[row],
+                                                 columnValid: isWithinRange[Succ[column]]
+                                                ) = use((x: Position[column, row], dir: East) => x.move(dir))
 
-  implicit def toNorth[column <: Nat, row <: Nat, out <: Nat](implicit
-                                                              columnValid: lessThanOrEqualTo9[column],
-                                                              pred: Pred.Aux[row, out],
-                                                              rowValid: lessThanOrEqualTo9[out]
-                                                             )
-  = use((x: PositionInsideTenByTenGrid[column, row], dir: North) => x.move(dir))
+  implicit def toNorth[column <: Nat, row <: Nat, nextRow <: Nat](implicit
+                                                                  columnValid: isWithinRange[column],
+                                                                  nextRow: Pred.Aux[row, nextRow],
+                                                                  rowValid: isWithinRange[nextRow]
+                                                                 ) = use((x: Position[column, row], dir: North) => x.move(dir))
 
-  implicit def toWest[column <: Nat, row <: Nat, out <: Nat](implicit
-                                                             rowValid: lessThanOrEqualTo9[row],
-                                                             pred: Pred.Aux[column, out],
-                                                             column: lessThanOrEqualTo9[out]
-                                                            )
-  = use((x: PositionInsideTenByTenGrid[column, row], dir: West) => x.move(dir))
+  implicit def toWest[column <: Nat, row <: Nat, nextColumn <: Nat](implicit
+                                                                    rowValid: isWithinRange[row],
+                                                                    nextColumn: Pred.Aux[column, nextColumn],
+                                                                    column: isWithinRange[nextColumn]
+                                                                   ) = use((x: Position[column, row], dir: West) => x.move(dir))
 }
