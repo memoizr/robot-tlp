@@ -27,8 +27,8 @@ class RobotTest extends FlatSpec with Matchers {
   }
 
   it should "move East within Range" in {
-    val newGridAfterHavingMovedToSouth: PositionInsideTenByTenGrid[_1, _0] = TenByTenGrid.withRobotAt[_0, _0]().move(East) //compiles
-    val newGridAfterHavingMovedToSouth2: PositionInsideTenByTenGrid[_9, _8] = TenByTenGrid.withRobotAt[_8, _8]().move(East) //compiles
+    val aValidGrid: PositionInsideTenByTenGrid[_1, _0] = TenByTenGrid.withRobotAt[_0, _0]().move(East) //compiles
+    val anotherValidGrid: PositionInsideTenByTenGrid[_9, _8] = TenByTenGrid.withRobotAt[_8, _8]().move(East) //compiles
 
     illTyped {
       "TenByTenGrid.withRobotAt[_9, _0]().move(East)"
@@ -36,8 +36,8 @@ class RobotTest extends FlatSpec with Matchers {
   }
 
   it should "move South within Range" in {
-    val newGridAfterHavingMovedToEast: PositionInsideTenByTenGrid[_0, _1] = TenByTenGrid.withRobotAt[_0, _0]().move(South) //compiles
-    val newGridAfterHavingMovedToEasts: PositionInsideTenByTenGrid[_2, _2] = TenByTenGrid.withRobotAt[_2, _1]().move(South) //compiles
+    val aValidGrid: PositionInsideTenByTenGrid[_0, _1] = TenByTenGrid.withRobotAt[_0, _0]().move(South) //compiles
+    val anotherValidGrid: PositionInsideTenByTenGrid[_2, _2] = TenByTenGrid.withRobotAt[_2, _1]().move(South) //compiles
 
     illTyped {
       "TenByTenGrid.withRobotAt[_0, _9]().move(South)"
@@ -45,8 +45,8 @@ class RobotTest extends FlatSpec with Matchers {
   }
 
   it should "move North within Range" in {
-    val newGridAfterHavingMovedToNorth: PositionInsideTenByTenGrid[_0, _8] = TenByTenGrid.withRobotAt[_0, _9]().move(North) //compiles
-    val newGridAfterHavingMovedToNorths: PositionInsideTenByTenGrid[_7, _6] = TenByTenGrid.withRobotAt[_7, _7]().move(North) //compiles
+    val aValidGrid: PositionInsideTenByTenGrid[_0, _8] = TenByTenGrid.withRobotAt[_0, _9]().move(North) //compiles
+    val anotherValidGrid: PositionInsideTenByTenGrid[_7, _6] = TenByTenGrid.withRobotAt[_7, _7]().move(North) //compiles
 
     illTyped {
       "TenByTenGrid.withRobotAt[_0, _0]().move(North)"
@@ -54,7 +54,7 @@ class RobotTest extends FlatSpec with Matchers {
   }
 
   it should "move West within Range" in {
-    val newGridAfterHavingMovedToNorth: PositionInsideTenByTenGrid[_1, _2] = TenByTenGrid.withRobotAt[_2, _2]().move(West) //compiles
+    val aValidGrid: PositionInsideTenByTenGrid[_1, _2] = TenByTenGrid.withRobotAt[_2, _2]().move(West) //compiles
 
     illTyped {
       "TenByTenGrid.withRobotAt[_0, _3]().move(West)"
