@@ -11,10 +11,6 @@ import scala.language.higherKinds
 class RobotTest extends FlatSpec with Matchers {
   import RobotAt._
 
-  implicit class MoveRobot[longitude <: Nat : isInsideWarehouse, latitude <: Nat : isInsideWarehouse](robot: RobotAt[longitude, latitude]) {
-//    def move[head <: Direction, tail <: HList, list <: head :: tail](list: list) = list.foldLeft(robot)(mover)
-  }
-
   it should "at most be ten by ten" in {
     val gridMin: RobotAt[_0, _0] = Warehouse.withRobotAt[_0, _0]() // compiles
     val gridMax: RobotAt[_9, _9] = Warehouse.withRobotAt[_9, _9]() // compiles
