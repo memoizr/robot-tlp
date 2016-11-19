@@ -5,7 +5,7 @@ import robot.RobotAt.isInsideWarehouse
 import shapeless.ops.nat.Pred
 import shapeless.{Nat, Succ}
 
-trait ProofThatItCanMove[direction <: Direction, longitude <: Nat, latitude <: Nat] {
+trait ProofThatItCanMove[direction <: Direction, latitude <: Nat, longitude <: Nat] {
   type NextPosition
 
   def validMove(): NextPosition
@@ -13,51 +13,51 @@ trait ProofThatItCanMove[direction <: Direction, longitude <: Nat, latitude <: N
 
 object ProofThatItCanMove {
   type `-1 =>`[input <: Nat, output <: Nat] = Pred.Aux[input, output]
-  type Position[direction <: Direction, longitude <: Nat, latitude <: Nat, out] = ProofThatItCanMove[direction, longitude, latitude] {type NextPosition = out}
+  type Position[direction <: Direction, latitude <: Nat, longitude <: Nat, out] = ProofThatItCanMove[direction, latitude, longitude] {type NextPosition = out}
 
-  implicit def `towards EAST if`[longitude <: Nat, latitude <: Nat]
+  implicit def `towards EAST if`[latitude <: Nat, longitude <: Nat]
   (
     implicit
     `next eastern longitude is valid`: isInsideWarehouse[Succ[longitude]],
     `latitude is valid`: isInsideWarehouse[latitude]
-  ) = new ProofThatItCanMove[East, longitude, latitude] {
-    type NextPosition = RobotAt[Succ[longitude], latitude]
+  ) = new ProofThatItCanMove[East, latitude, longitude] {
+    type NextPosition = RobotAt[latitude, Succ[longitude]]
 
-    def validMove(): NextPosition = RobotAt[Succ[longitude], latitude]()
+    def validMove(): NextPosition = RobotAt[latitude, Succ[longitude]]()
   }
 
-  implicit def `towards SOUTH if`[longitude <: Nat, latitude <: Nat]
+  implicit def `towards NORTH if`[latitude <: Nat, longitude <: Nat]
   (
     implicit
     `longitude is valid`: isInsideWarehouse[longitude],
-    `next southerly latitude is valid`: isInsideWarehouse[Succ[latitude]]
-  ) = new ProofThatItCanMove[South, longitude, latitude] {
-    type NextPosition = RobotAt[longitude, Succ[latitude]]
+    `next northern latitude is valid`: isInsideWarehouse[Succ[latitude]]
+  ) = new ProofThatItCanMove[North, latitude, longitude] {
+    type NextPosition = RobotAt[Succ[latitude], longitude]
 
-    def validMove(): NextPosition = RobotAt[longitude, Succ[latitude]]()
+    def validMove(): NextPosition = RobotAt[Succ[latitude], longitude]()
   }
 
-  implicit def `towards NORTH if`[longitude <: Nat, latitude <: Nat, nextLatitude <: Nat]
+  implicit def `towards SOUTH if`[latitude <: Nat, longitude <: Nat, nextLatitude <: Nat]
   (
     implicit
     `longitude is valid`: isInsideWarehouse[longitude],
     `latitude can be decreased`: latitude `-1 =>` nextLatitude,
-    `next northern latitude is valid`: isInsideWarehouse[nextLatitude]
-  ) = new ProofThatItCanMove[North, longitude, latitude] {
-    type NextPosition = RobotAt[longitude, nextLatitude]
+    `next southerly latitude is valid`: isInsideWarehouse[nextLatitude]
+  ) = new ProofThatItCanMove[South, latitude, longitude] {
+    type NextPosition = RobotAt[nextLatitude, longitude]
 
-    def validMove(): NextPosition = RobotAt[longitude, nextLatitude]()
+    def validMove(): NextPosition = RobotAt[nextLatitude, longitude]()
   }
 
-  implicit def `towards WEST if`[longitude <: Nat, latitude <: Nat, nextLongitude <: Nat]
+  implicit def `towards WEST if`[latitude <: Nat, longitude <: Nat, nextLongitude <: Nat]
   (
     implicit
     `latitude is valid`: isInsideWarehouse[latitude],
     `longitude can be decreased`: longitude `-1 =>` nextLongitude,
     `next western longitude is valid`: isInsideWarehouse[nextLongitude]
-  ) = new ProofThatItCanMove[West, longitude, latitude] {
-    type NextPosition = RobotAt[nextLongitude, latitude]
+  ) = new ProofThatItCanMove[West, latitude, longitude] {
+    type NextPosition = RobotAt[latitude, nextLongitude]
 
-    def validMove(): NextPosition = RobotAt[nextLongitude, latitude]()
+    def validMove(): NextPosition = RobotAt[latitude, nextLongitude]()
   }
 }
