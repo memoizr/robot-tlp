@@ -5,7 +5,7 @@ import shapeless.ops.nat.Pred
 import shapeless.{Nat, Poly, Succ}
 import Direction._
 
-object RobotMovesMatcher extends Poly {
+object Router extends Poly {
   type `-1 =>`[input <: Nat, output <: Nat] = Pred.Aux[input, output]
 
   implicit def `can move NORTH when`[latitude <: Nat, longitude <: Nat](

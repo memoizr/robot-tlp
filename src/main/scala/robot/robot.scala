@@ -1,10 +1,12 @@
 package robot
 
-import robot.RobotAt.isInsideWarehouse
+import robot.RobotAt._
 import shapeless._
 import shapeless.nat._
 import shapeless.ops.hlist.LeftFolder
 import shapeless.ops.nat._
+
+import scala.annotation.implicitNotFound
 
 case class RobotAt[latitude <: Nat: isInsideWarehouse, longitude <: Nat: isInsideWarehouse]() {
 
@@ -13,13 +15,20 @@ case class RobotAt[latitude <: Nat: isInsideWarehouse, longitude <: Nat: isInsid
     lookForA: ProofThatItCanMove[towardsDirection.type, latitude, longitude]
   ) = lookForA.validMove()
 
-  def moveRepeatedly[head <: Direction, tail <: HList](listOfDirections: head :: tail)(
+  def moveAlongRoute[head <: Direction, tail <: HList](route: head :: tail)(
     implicit
-    moveAlong: LeftFolder[head :: tail, RobotAt[latitude, longitude], RobotMovesMatcher.type]
-  ): moveAlong.Out = moveAlong(listOfDirections, RobotAt[latitude, longitude]())
+    moveAlong: FollowRoute[head :: tail, RobotAt[latitude, longitude], Router.type]
+  ): moveAlong.Out = moveAlong(route, RobotAt[latitude, longitude]())
 }
 
 object RobotAt {
+  @implicitNotFound(
+    """Illegal route: cannot move along route=${route} from position=${initialPosition} when using Router=${router}.
+Please ensure robot stays within the confines of the warehouse (_0 <= position <= _9)."""
+  )
+  type FollowRoute[route <: HList, initialPosition, router] = LeftFolder[route, initialPosition, router]
+
+  @implicitNotFound("Illegal position: ${position} is not <= _9")
   type isInsideWarehouse[position <: Nat] = position LTEq _9
 }
 
