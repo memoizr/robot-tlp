@@ -7,7 +7,6 @@ import shapeless.test.illTyped
 
 import scala.language.higherKinds
 
-
 class RobotTest extends FlatSpec with Matchers {
 
   it should "at most be ten by ten" in {

@@ -16,10 +16,9 @@ trait ProofThatItCanMove[direction <: Direction, latitude <: Nat, longitude <: N
 
 object ProofThatItCanMove {
   type `-1 =>`[input <: Nat, output <: Nat] = Pred.Aux[input, output]
-  type Position[direction <: Direction, latitude <: Nat, longitude <: Nat, out] = ProofThatItCanMove[direction, latitude, longitude] {type NextPosition = out}
+  type Position[direction <: Direction, latitude <: Nat, longitude <: Nat, out] = ProofThatItCanMove[direction, latitude, longitude] { type NextPosition = out }
 
-  implicit def `towards EAST if`[latitude <: Nat, longitude <: Nat]
-  (
+  implicit def `towards EAST if`[latitude <: Nat, longitude <: Nat](
     implicit
     `next eastern longitude is valid`: isInsideWarehouse[Succ[longitude]],
     `latitude is valid`: isInsideWarehouse[latitude]
@@ -29,8 +28,7 @@ object ProofThatItCanMove {
     def validMove(): NextPosition = RobotAt[latitude, Succ[longitude]]()
   }
 
-  implicit def `towards NORTH if`[latitude <: Nat, longitude <: Nat]
-  (
+  implicit def `towards NORTH if`[latitude <: Nat, longitude <: Nat](
     implicit
     `longitude is valid`: isInsideWarehouse[longitude],
     `next northern latitude is valid`: isInsideWarehouse[Succ[latitude]]
@@ -40,8 +38,7 @@ object ProofThatItCanMove {
     def validMove(): NextPosition = RobotAt[Succ[latitude], longitude]()
   }
 
-  implicit def `towards SOUTH if`[latitude <: Nat, longitude <: Nat, nextLatitude <: Nat]
-  (
+  implicit def `towards SOUTH if`[latitude <: Nat, longitude <: Nat, nextLatitude <: Nat](
     implicit
     `longitude is valid`: isInsideWarehouse[longitude],
     `latitude can be decreased`: latitude `-1 =>` nextLatitude,
@@ -52,8 +49,7 @@ object ProofThatItCanMove {
     def validMove(): NextPosition = RobotAt[nextLatitude, longitude]()
   }
 
-  implicit def `towards WEST if`[latitude <: Nat, longitude <: Nat, nextLongitude <: Nat]
-  (
+  implicit def `towards WEST if`[latitude <: Nat, longitude <: Nat, nextLongitude <: Nat](
     implicit
     `latitude is valid`: isInsideWarehouse[latitude],
     `longitude can be decreased`: longitude `-1 =>` nextLongitude,
