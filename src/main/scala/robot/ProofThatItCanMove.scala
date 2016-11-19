@@ -5,6 +5,9 @@ import robot.RobotAt.isInsideWarehouse
 import shapeless.ops.nat.Pred
 import shapeless.{Nat, Succ}
 
+import scala.annotation.implicitNotFound
+
+@implicitNotFound("Illegal move: Attempting to move robot at position: latitude=${latitude}, longitude=${longitude} towards direction=${direction}")
 trait ProofThatItCanMove[direction <: Direction, latitude <: Nat, longitude <: Nat] {
   type NextPosition
 
